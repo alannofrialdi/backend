@@ -14,4 +14,6 @@ public interface UsersService {
     Optional<Users> getUserByEmail(String email); // Cari user berdasarkan email
 
     Optional<Users> getUserByUsername(String username); // Digunakan untuk autentikasi jika memakai JWT
+
+    Optional<Users> getUserByPassword(String password); // Digunakan untuk autentikasi jika memakai JWT
 }

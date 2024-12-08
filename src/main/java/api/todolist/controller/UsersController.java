@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -19,11 +20,16 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/users")
 public class UsersController {
-    // Logger untuk mencatat aktivitas pada controller
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UsersController.class);
+    private final UsersService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UsersService userService;
+    public UsersController(UsersService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // GET all users
     @GetMapping
@@ -43,7 +49,7 @@ public class UsersController {
         response.put("message", "Users retrieved successfully"); // Pesan sukses
         response.put("status", "ok"); // Status HTTP 200 OK
         response.put("code", 200); // Status HTTP 200 OK
-        response.put("data", users); // Data pengguna
+        response.put("content", users); // Data pengguna
         return ResponseEntity.ok(response); // Mengembalikan respons sukses
     }
 
@@ -78,7 +84,7 @@ public class UsersController {
         return ResponseEntity.ok(Map.of(
                 "status", 200,
                 "message", "User found successfully.",
-                "data", user)); // Respons sukses dengan status 200
+                "content", user)); // Respons sukses dengan status 200
     }
 
     // POST create user
@@ -88,12 +94,19 @@ public class UsersController {
 
         // Cek apakah username sudah ada di database
         Optional<Users> existingUser = userService.getUserByUsername(user.getUsername());
+        Optional<Users> existingUserByEmail = userService.getUserByEmail(user.getEmail());
 
         if (existingUser.isPresent()) {
-            // Jika username sudah ada, kembalikan respons error 400
             response.put("status", "validation");
             response.put("code", 200);
             response.put("message", "Username already exists");
+            return ResponseEntity.ok(response);
+        }
+
+        if (existingUserByEmail.isPresent()) {
+            response.put("status", "validation");
+            response.put("code", 200);
+            response.put("message", "Email already exists");
             return ResponseEntity.ok(response);
         }
 
@@ -123,6 +136,35 @@ public class UsersController {
         response.put("code", 200);
         response.put("message", "User created successfully");
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> handleLogin(@RequestBody Users user) {
+        LOGGER.info("USER INFO {}", user.toString());
+        // Cari user berdasarkan username/email
+        Optional<Users> existingUser = userService.getUserByUsername(user.getUsername());
+
+        Map<String, Object> response = new HashMap<>();
+        if (existingUser.isPresent()) {
+            Users foundUser = existingUser.get();
+
+            // Cocokkan password
+            if (passwordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
+                response.put("status", "ok");
+                response.put("code", 200);
+                response.put("message", "Welcome " + user.getUsername());
+            } else {
+                response.put("status", "error");
+                response.put("code", 200);
+                response.put("message", "Invalid credentials");
+            }
+        } else {
+            response.put("status", "error");
+            response.put("code", 200);
+            response.put("message", "User not found");
+        }
+
+        return ResponseEntity.status((int) response.get("code")).body(response);
     }
 
 }

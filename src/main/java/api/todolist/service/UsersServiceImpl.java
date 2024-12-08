@@ -47,4 +47,9 @@ public class UsersServiceImpl implements UsersService {
     public Optional<Users> getUserByEmail(String email) {
         return usersRepository.findByEmail(email);
     }
+
+    @Override
+    public Optional<Users> getUserByPassword(String password) {
+        return usersRepository.findByPassword(password);
+    }
 }
