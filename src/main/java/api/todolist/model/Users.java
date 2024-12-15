@@ -1,5 +1,8 @@
 package api.todolist.model;
 
+// import java.util.ArrayList;
+// import java.util.List;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -31,7 +34,6 @@ public class Users {
     @Column(nullable = false)
     private String email;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
