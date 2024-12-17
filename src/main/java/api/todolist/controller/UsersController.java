@@ -79,12 +79,10 @@ public class UsersController {
                             "message", "User with parameter '" + param + "' not found.")); // Respons error 404
         }
 
-        // Jika user ditemukan, kembalikan respons 200 dengan data pengguna
-        LOGGER.info("User with parameter '{}' found successfully.", param); // INFO log
         return ResponseEntity.ok(Map.of(
+                "content", user,
                 "status", 200,
-                "message", "User found successfully.",
-                "content", user)); // Respons sukses dengan status 200
+                "message", "User found successfully."));
     }
 
     // POST create user

@@ -1,7 +1,8 @@
 package api.todolist.model;
 
-// import java.util.ArrayList;
-// import java.util.List;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -9,7 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {
+@Table(name = "user", uniqueConstraints = {
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
@@ -33,6 +34,10 @@ public class Users {
     @Email(message = "Email should be valid")
     @Column(nullable = false)
     private String email;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("kategori")
+    private List<Category> categories;
 
     public Long getId() {
         return id;
@@ -64,5 +69,13 @@ public class Users {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

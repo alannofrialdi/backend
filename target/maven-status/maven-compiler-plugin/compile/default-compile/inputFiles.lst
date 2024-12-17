@@ -1,12 +1,16 @@
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/TodolistApplication.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/config/GlobalCorsConfig.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/config/SecurityConfig.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/controller/CategoryController.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/controller/TaskController.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/controller/UsersController.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/model/Category.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/model/Task.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/model/Users.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/repository/CategoryRepository.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/repository/TaskRepository.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/repository/UsersRepository.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/service/CategoryService.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/service/CustomUserDetailsService.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/service/TaskService.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/service/UsersService.java

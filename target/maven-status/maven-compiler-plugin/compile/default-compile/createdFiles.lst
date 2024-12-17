@@ -1,3 +1,5 @@
+api/todolist/controller/TaskController.class
+api/todolist/model/Task$Priority.class
 api/todolist/repository/UsersRepository.class
 api/todolist/service/UsersServiceImpl.class
 api/todolist/TodolistApplication.class
@@ -9,3 +11,8 @@ api/todolist/service/UsersService.class
 api/todolist/controller/UsersController.class
 utils/BearerTokenAuthFilter.class
 api/todolist/model/Users.class
+api/todolist/model/Task$Status.class
+api/todolist/model/Category.class
+api/todolist/service/TaskService.class
+api/todolist/repository/TaskRepository.class
+api/todolist/model/Task.class
