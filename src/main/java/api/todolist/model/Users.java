@@ -1,5 +1,6 @@
 package api.todolist.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,8 +37,8 @@ public class Users {
     private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonProperty("kategori")
-    private List<Category> categories;
+    @JsonProperty("categories")
+    private List<Category> categories = new ArrayList<>();
 
     public Long getId() {
         return id;

@@ -34,49 +34,45 @@ public class UsersController {
     // GET all users
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
-        // Mengambil semua pengguna dari service
+
         List<Users> users = userService.getAllUsers();
 
-        // Jika tidak ada pengguna ditemukan, kembalikan respons 404
         if (users.isEmpty()) {
             Map<String, String> response = new HashMap<>();
-            response.put("message", "No users found"); // Pesan ketika tidak ada pengguna
-            return ResponseEntity.status(404).body(response); // Mengembalikan respons dengan status 404
+            response.put("message", "No users found");
+            return ResponseEntity.status(404).body(response);
         }
 
-        // Jika pengguna ditemukan, kembalikan data dengan status 200
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Users retrieved successfully"); // Pesan sukses
-        response.put("status", "ok"); // Status HTTP 200 OK
-        response.put("code", 200); // Status HTTP 200 OK
-        response.put("content", users); // Data pengguna
-        return ResponseEntity.ok(response); // Mengembalikan respons sukses
+        response.put("message", "Users retrieved successfully");
+        response.put("status", "ok");
+        response.put("code", 200);
+        response.put("content", users);
+        return ResponseEntity.ok(response);
     }
 
-    // GET user by param (email atau username)
+    // GET user by param (email or username)
     @GetMapping("/find")
     public ResponseEntity<?> getUserByParam(@RequestParam String param) {
-        // Log parameter yang diterima
-        LOGGER.info("Searching for user with parameter: {}", param); // INFO log
+
+        LOGGER.info("Searching for user with parameter: {}", param);
 
         Object user;
 
-        // Tentukan apakah param adalah email atau username
-        if (param.contains("@")) { // Jika mengandung '@', anggap ini email
-            LOGGER.info("Parameter detected as email."); // INFO log
-            user = userService.getUserByEmail(param).orElse(null); // Cari berdasarkan email
-        } else { // Anggap sebagai username
-            LOGGER.info("Parameter detected as username."); // INFO log
-            user = userService.getUserByUsername(param).orElse(null); // Cari berdasarkan username
+        if (param.contains("@")) {
+            LOGGER.info("Parameter detected as email.");
+            user = userService.getUserByEmail(param).orElse(null);
+        } else {
+            LOGGER.info("Parameter detected as username.");
+            user = userService.getUserByUsername(param).orElse(null);
         }
 
-        // Jika user tidak ditemukan, kembalikan respons 404
         if (user == null) {
-            LOGGER.warn("User with parameter '{}' not found.", param); // WARN log
+            LOGGER.warn("User with parameter '{}' not found.", param);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of(
                             "status", 404,
-                            "message", "User with parameter '" + param + "' not found.")); // Respons error 404
+                            "message", "User with parameter '" + param + "' not found."));
         }
 
         return ResponseEntity.ok(Map.of(

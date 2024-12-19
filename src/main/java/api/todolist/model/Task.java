@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import api.todolist.converter.PriorityConverter;
+import api.todolist.converter.StatusConverter;
+
 @Entity
 @Table(name = "task", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id"),
@@ -15,8 +20,9 @@ public class Task {
     private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    @JoinColumn(name = "category", nullable = false)
+    @JsonIgnore // Menghindari referensi berulang
+    private Category category;
 
     @Column(nullable = false, length = 255)
     private String title;
@@ -24,14 +30,14 @@ public class Task {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = PriorityConverter.class)
     @Column(nullable = false, length = 6)
     private Priority priority = Priority.MEDIUM;
 
     @Column
     private LocalDateTime deadline;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = StatusConverter.class)
     @Column(nullable = false, length = 12)
     private Status status = Status.PENDING;
 
@@ -42,21 +48,38 @@ public class Task {
     private LocalDateTime updatedAt;
 
     public enum Priority {
-        LOW, MEDIUM, HIGH
+        LOW, MEDIUM, HIGH;
+
+        public static Priority fromString(String value) {
+            for (Priority priority : Priority.values()) {
+                if (priority.name().equalsIgnoreCase(value)) {
+                    return priority;
+                }
+            }
+            throw new IllegalArgumentException("Invalid Priority value: " + value);
+        }
     }
 
     public enum Status {
-        PENDING, IN_PROGRESS, COMPLETED
+        PENDING, IN_PROGRESS, COMPLETED;
+
+        public static Status fromString(String value) {
+            for (Status status : Status.values()) {
+                if (status.name().equalsIgnoreCase(value)) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("Invalid Status value: " + value);
+        }
     }
 
-    // Constructors
     public Task() {
         // Default constructor
     }
 
-    public Task(Users user, String title, String description, Priority priority, LocalDateTime deadline,
+    public Task(Category category, String title, String description, Priority priority, LocalDateTime deadline,
             Status status) {
-        this.user = user;
+        this.category = category;
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -64,7 +87,6 @@ public class Task {
         this.status = status;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -73,12 +95,12 @@ public class Task {
         this.id = id;
     }
 
-    public Users getUser() {
-        return user;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getTitle() {
@@ -125,8 +147,16 @@ public class Task {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @PrePersist

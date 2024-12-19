@@ -1,6 +1,6 @@
 package api.todolist.controller;
 
-import api.todolist.model.Task;
+import api.todolist.dto.TaskDTO;
 import api.todolist.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,43 +17,32 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Task>> getTasksByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(taskService.getTasksByUserId(userId));
+    public ResponseEntity<List<TaskDTO>> getAllTasks(@RequestParam String username) {
+        return ResponseEntity.ok(taskService.getTasksByUser(username));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-        return taskService.getTaskById(id)
+    public ResponseEntity<TaskDTO> getTaskById(@RequestParam String username, @PathVariable Long id) {
+        return taskService.getTaskByIdAndUser(id, username)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        return ResponseEntity.ok(taskService.createTask(task));
+    public ResponseEntity<TaskDTO> createTask(
+            @RequestBody TaskDTO taskDTO) {
+        return ResponseEntity.ok(taskService.createTask(taskDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
-        try {
-            return ResponseEntity.ok(taskService.updateTask(id, updatedTask));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<TaskDTO> updateTask(@RequestParam String username, @PathVariable Long id,
+            @RequestBody TaskDTO taskDTO) {
+        return ResponseEntity.ok(taskService.updateTask(id, username, taskDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        try {
-            taskService.deleteTask(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteTask(@RequestParam String username, @PathVariable Long id) {
+        taskService.deleteTask(id, username);
+        return ResponseEntity.noContent().build();
     }
 }

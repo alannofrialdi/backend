@@ -4,6 +4,12 @@
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/controller/CategoryController.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/controller/TaskController.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/controller/UsersController.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/converter/PriorityConverter.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/converter/StatusConverter.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/dto/CategoryDTO.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/dto/TaskDTO.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/mapper/CategoryMapper.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/mapper/TaskMapper.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/model/Category.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/model/Task.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/model/Users.java

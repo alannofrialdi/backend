@@ -1,9 +1,13 @@
 package api.todolist.service;
 
+import api.todolist.dto.CategoryDTO;
+import api.todolist.mapper.CategoryMapper;
 import api.todolist.model.Category;
 import api.todolist.model.Users;
 import api.todolist.repository.CategoryRepository;
 import api.todolist.repository.UsersRepository;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,25 +23,37 @@ public class CategoryService {
         this.userRepository = userRepository;
     }
 
-    // Create Category
-    public Category addCategory(String username, Category category) {
-        Users user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+    public CategoryDTO addCategory(String username, Category category) {
+        try {
+            Users user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        category.setUser(user);
-        return categoryRepository.save(category);
+            category.setUser(user);
+            category.setCreatedAt(LocalDateTime.now());
+            category.setUpdatedAt(LocalDateTime.now());
+            Category savedCategory = categoryRepository.save(category);
+
+            return CategoryMapper.toDTO(savedCategory);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
     }
 
-    // Read Categories by User
-    public List<Category> getUserCategories(String username) {
-        Users user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+    public boolean doesCategoryExist(String username, String categoryName) {
+        return categoryRepository.existsByUser_UsernameAndCategory(username, categoryName);
+    }
 
-        return user.getCategories();
+    // Get Categories by User
+    public List<CategoryDTO> getUserCategories(String username) {
+        Users user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found:" + username));
+
+        return CategoryMapper.toDTOList(user.getCategories());
     }
 
     // Update Category
-    public Category updateCategory(String username, Long categoryId, Category categoryDetails) {
+    public CategoryDTO updateCategory(String username, Long categoryId, Category categoryDetails) {
         Users user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
@@ -47,8 +63,9 @@ public class CategoryService {
 
         category.setCategory(categoryDetails.getCategory());
         category.setUpdatedAt(LocalDateTime.now());
+        Category updatedCategory = categoryRepository.save(category);
 
-        return categoryRepository.save(category);
+        return CategoryMapper.toDTO(updatedCategory);
     }
 
     // Delete Category
