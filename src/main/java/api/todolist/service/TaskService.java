@@ -1,93 +1,106 @@
 package api.todolist.service;
 
-import api.todolist.dto.TaskDTO;
+import api.todolist.dto.TaskRequestDTO;
+import api.todolist.dto.TaskResponseDTO;
+import api.todolist.exception.CategoryUserMismatchException;
 import api.todolist.mapper.TaskMapper;
-import api.todolist.model.Task;
 import api.todolist.model.Category;
-import api.todolist.repository.TaskRepository;
+import api.todolist.model.Task;
+import api.todolist.model.Users;
 import api.todolist.repository.CategoryRepository;
+import api.todolist.repository.TaskRepository;
+import api.todolist.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
-    private final TaskRepository taskRepository;
-    private final CategoryRepository categoryRepository;
 
-    public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository) {
-        this.taskRepository = taskRepository;
-        this.categoryRepository = categoryRepository;
-    }
+        private final TaskRepository taskRepository;
+        private final TaskMapper taskMapper;
+        private final CategoryRepository categoryRepository;
+        private final UsersRepository usersRepository;
 
-    public List<TaskDTO> getAllTasks() {
-        return taskRepository.findAll()
-                .stream()
-                .map(TaskMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<TaskDTO> getTasksByUser(String username) {
-        return taskRepository.findByCategoryUserUsername(username) // Query by user username
-                .stream()
-                .map(TaskMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    public Optional<TaskDTO> getTaskById(Long id) {
-        return taskRepository.findById(id)
-                .map(TaskMapper::toDTO);
-    }
-
-    public Optional<TaskDTO> getTaskByIdAndUser(Long id, String username) {
-        return taskRepository.findByIdAndCategory_User_Username(id, username)
-                .map(TaskMapper::toDTO);
-    }
-
-    public TaskDTO createTask(TaskDTO taskDTO) {
-        Category category = categoryRepository.findByCategory(taskDTO.getCategoryName())
-                .orElseThrow(() -> new RuntimeException(taskDTO.getCategoryName() + " Not Found"));
-
-        System.out.println(taskDTO.getCategoryName() + " Not Found SOUT");
-        Task task = TaskMapper.toEntity(taskDTO);
-        task.setCategory(category);
-
-        return TaskMapper.toDTO(taskRepository.save(task));
-    }
-
-    public TaskDTO updateTask(Long id, String username, TaskDTO updatedTaskDTO) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
-
-        // Validasi apakah task milik user yang benar
-        if (!task.getCategory().getUser().getUsername().equals(username)) {
-            throw new RuntimeException("Task does not belong to user");
+        public TaskService(TaskRepository taskRepository, TaskMapper taskMapper,
+                        CategoryRepository categoryRepository, UsersRepository usersRepository) {
+                this.taskRepository = taskRepository;
+                this.taskMapper = taskMapper;
+                this.categoryRepository = categoryRepository;
+                this.usersRepository = usersRepository;
         }
 
-        Category category = categoryRepository.findByCategory(updatedTaskDTO.getCategoryName())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        public List<TaskResponseDTO> getTasksByCategoryAndUser(Long categoryId, Long userId) {
+                Category category = categoryRepository.findById(categoryId)
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                                "Category with ID " + categoryId + " not found"));
+                Users user = usersRepository.findById(userId)
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                                "User with ID " + userId + " not found"));
 
-        // Update task
-        task.setTitle(updatedTaskDTO.getTitle());
-        task.setDescription(updatedTaskDTO.getDescription());
-        task.setPriority(Task.Priority.valueOf(updatedTaskDTO.getPriority()));
-        task.setStatus(Task.Status.valueOf(updatedTaskDTO.getStatus()));
-        task.setDeadline(updatedTaskDTO.getDeadline());
-        task.setCategory(category);
-
-        return TaskMapper.toDTO(taskRepository.save(task));
-    }
-
-    public void deleteTask(Long id, String username) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
-
-        if (!task.getCategory().getUser().getUsername().equals(username)) {
-            throw new RuntimeException("Task does not belong to user");
+                return taskRepository.findByCategoryAndUser(category, user)
+                                .stream()
+                                .map(taskMapper::toDTO)
+                                .collect(Collectors.toList());
         }
 
-        taskRepository.deleteById(id);
-    }
+        public TaskResponseDTO createTask(TaskRequestDTO requestDTO) {
+                // Cari user berdasarkan ID
+                Users user = usersRepository.findById(requestDTO.getUserId())
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                                "User with ID " + requestDTO.getUserId() + " not found"));
+
+                // Cari category berdasarkan ID
+                Category category = categoryRepository.findById(requestDTO.getCategoryId())
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                                "Category with ID " + requestDTO.getCategoryId() + " not found"));
+
+                // Validasi apakah category milik user
+                if (!category.getUser().getId().equals(user.getId())) {
+                        throw new CategoryUserMismatchException(
+                                        "Category with ID " + requestDTO.getCategoryId() +
+                                                        " does not belong to User with ID " + requestDTO.getUserId());
+                }
+
+                // Jika validasi lolos, buat Task baru
+                Task task = taskMapper.toEntity(requestDTO, category, user);
+                Task savedTask = taskRepository.save(task);
+
+                return taskMapper.toDTO(savedTask);
+        }
+
+        public TaskResponseDTO getTaskById(Long id) {
+                Task task = taskRepository.findById(id)
+                                .orElseThrow(() -> new IllegalArgumentException("Task with ID " + id + " not found"));
+                return taskMapper.toDTO(task);
+        }
+
+        public TaskResponseDTO updateTask(Long id, TaskRequestDTO requestDTO) {
+                Task task = taskRepository.findById(id)
+                                .orElseThrow(() -> new IllegalArgumentException("Task with ID " + id + " not found"));
+
+                Category category = categoryRepository.findById(requestDTO.getCategoryId())
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                                "Category with ID " + requestDTO.getCategoryId() + " not found"));
+
+                Users user = usersRepository.findById(requestDTO.getUserId())
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                                "User with ID " + requestDTO.getUserId() + " not found"));
+
+                task.setTitle(requestDTO.getTitle());
+                task.setDescription(requestDTO.getDescription());
+                task.setDeadline(requestDTO.getDeadline());
+                task.setCategory(category);
+                task.setUser(user);
+
+                Task updatedTask = taskRepository.save(task);
+                return taskMapper.toDTO(updatedTask);
+        }
+
+        public void deleteTask(Long id) {
+                Task task = taskRepository.findById(id)
+                                .orElseThrow(() -> new IllegalArgumentException("Task with ID " + id + " not found"));
+                taskRepository.delete(task);
+        }
 }

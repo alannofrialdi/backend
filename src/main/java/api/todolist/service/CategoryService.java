@@ -33,7 +33,7 @@ public class CategoryService {
             category.setUpdatedAt(LocalDateTime.now());
             Category savedCategory = categoryRepository.save(category);
 
-            return CategoryMapper.toDTO(savedCategory);
+            return CategoryMapper.toCategoryDTO(savedCategory);
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -65,7 +65,7 @@ public class CategoryService {
         category.setUpdatedAt(LocalDateTime.now());
         Category updatedCategory = categoryRepository.save(category);
 
-        return CategoryMapper.toDTO(updatedCategory);
+        return CategoryMapper.toCategoryDTO(updatedCategory);
     }
 
     // Delete Category

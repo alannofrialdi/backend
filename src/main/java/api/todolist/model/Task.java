@@ -1,10 +1,12 @@
 package api.todolist.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import api.todolist.converter.PriorityConverter;
 import api.todolist.converter.StatusConverter;
@@ -19,17 +21,24 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "category", nullable = false)
-    @JsonIgnore // Menghindari referensi berulang
+    @ManyToOne
+    @JsonBackReference
     private Category category;
 
+    @ManyToOne
+    @JsonBackReference
+    private Users user;
+
+    @NotNull
+    @Size(max = 255)
     @Column(nullable = false, length = 255)
     private String title;
 
+    @Size(max = 10000)
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @NotNull
     @Convert(converter = PriorityConverter.class)
     @Column(nullable = false, length = 6)
     private Priority priority = Priority.MEDIUM;
@@ -37,13 +46,16 @@ public class Task {
     @Column
     private LocalDateTime deadline;
 
+    @NotNull
     @Convert(converter = StatusConverter.class)
     @Column(nullable = false, length = 12)
     private Status status = Status.PENDING;
 
+    @NotNull
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @NotNull
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
@@ -77,9 +89,11 @@ public class Task {
         // Default constructor
     }
 
-    public Task(Category category, String title, String description, Priority priority, LocalDateTime deadline,
+    public Task(Category category, Users user, String title, String description, Priority priority,
+            LocalDateTime deadline,
             Status status) {
         this.category = category;
+        this.user = user;
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -183,5 +197,13 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }

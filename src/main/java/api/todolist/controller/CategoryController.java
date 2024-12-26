@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -30,8 +32,12 @@ public class CategoryController {
             boolean isExist = categoryService.doesCategoryExist(username, category.getCategory());
 
             if (isExist) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("Category already exists for this user");
+                Map<String, Object> response = new HashMap<>();
+                response.put("status", "HttpStatus.CONFLICT");
+                response.put("code", 409);
+                response.put("message", "Category already exists for this user");
+                return ResponseEntity.status(200)
+                        .body(response);
             }
 
             // Tambahkan kategori baru

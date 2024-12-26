@@ -8,11 +8,13 @@ public class CategoryDTO {
     private String category;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<TaskDTO> tasks;
+    private List<TaskResponseDTO> tasks;
 
-    // Constructor
+    public CategoryDTO() {
+    }
+
     public CategoryDTO(Long id, String category, LocalDateTime createdAt, LocalDateTime updatedAt,
-            List<TaskDTO> tasks) {
+            List<TaskResponseDTO> tasks) {
         this.id = id;
         this.category = category;
         this.createdAt = createdAt;
@@ -20,7 +22,6 @@ public class CategoryDTO {
         this.tasks = tasks;
     }
 
-    // Getter dan Setter
     public Long getId() {
         return id;
     }
@@ -53,11 +54,11 @@ public class CategoryDTO {
         this.updatedAt = updatedAt;
     }
 
-    public List<TaskDTO> getTasks() {
+    public List<TaskResponseDTO> getTasks() {
         return tasks;
     }
 
-    public void setTasks(List<TaskDTO> tasks) {
+    public void setTasks(List<TaskResponseDTO> tasks) {
         this.tasks = tasks;
     }
 }

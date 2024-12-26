@@ -2,38 +2,31 @@ package api.todolist.dto;
 
 import java.time.LocalDateTime;
 
-public class TaskDTO {
-    private Long id;
+public class TaskRequestDTO {
+
     private String title;
     private String description;
-    private String priority;
-    private String status;
+    private String priority; // Bisa diganti dengan Enum
+    private String status; // Bisa diganti dengan Enum
     private LocalDateTime deadline;
-    private String category; // Nama unik kategori
+    private Long categoryId; // Menggunakan ID kategori
+    private Long userId; // Menggunakan ID pengguna
 
-    public TaskDTO() {
+    public TaskRequestDTO() {
     }
 
-    public TaskDTO(Long id, String title, String description, String priority, String status,
-            LocalDateTime deadline, String category) {
-        this.id = id;
+    public TaskRequestDTO(String title, String description, String priority, String status, LocalDateTime deadline,
+            Long categoryId, Long userId) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.status = status;
         this.deadline = deadline;
-        this.category = category;
+        this.categoryId = categoryId;
+        this.userId = userId;
     }
 
-    // Getters dan Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    // Getters and Setters
     public String getTitle() {
         return title;
     }
@@ -74,11 +67,19 @@ public class TaskDTO {
         this.deadline = deadline;
     }
 
-    public String getCategoryName() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategoryName(String category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

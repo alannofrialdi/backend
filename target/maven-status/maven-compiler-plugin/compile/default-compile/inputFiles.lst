@@ -7,7 +7,10 @@
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/converter/PriorityConverter.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/converter/StatusConverter.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/dto/CategoryDTO.java
-/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/dto/TaskDTO.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/dto/TaskRequestDTO.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/dto/TaskResponseDTO.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/exception/CategoryUserMismatchException.java
+/Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/exception/GlobalExceptionHandler.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/mapper/CategoryMapper.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/mapper/TaskMapper.java
 /Users/alannofrialdi/Documents/Project/Todo_List/backend/src/main/java/api/todolist/model/Category.java

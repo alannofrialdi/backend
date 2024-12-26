@@ -3,6 +3,7 @@ package api.todolist.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
@@ -38,6 +39,7 @@ public class Users {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty("categories")
+    @JsonManagedReference
     private List<Category> categories = new ArrayList<>();
 
     public Long getId() {

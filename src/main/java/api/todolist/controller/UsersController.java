@@ -146,6 +146,7 @@ public class UsersController {
             if (passwordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
                 response.put("status", "ok");
                 response.put("code", 200);
+                response.put("user", user.getUsername());
                 response.put("message", "Welcome " + user.getUsername());
             } else {
                 response.put("status", "error");
