@@ -19,7 +19,6 @@ public class TaskMapper {
         task.setStatus(Task.Status.fromString(dto.getStatus())); // Ensure fromString handles null
         task.setDeadline(dto.getDeadline());
         task.setCategory(category);
-        task.setUser(user);
         return task;
     }
 
@@ -34,9 +33,6 @@ public class TaskMapper {
         dto.setCreatedAt(task.getCreatedAt());
         dto.setUpdatedAt(task.getUpdatedAt());
         dto.setCategoryId(task.getCategory() != null ? task.getCategory().getId() : null);
-        dto.setCategoryName(task.getCategory() != null ? task.getCategory().getCategory() : null);
-        dto.setUserId(task.getUser() != null ? task.getUser().getId() : null);
-        dto.setUsername(task.getUser() != null ? task.getUser().getUsername() : null);
         return dto;
     }
 }

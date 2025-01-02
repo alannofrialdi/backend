@@ -39,6 +39,13 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public Users updateUser(Users user) {
+        // user.setUsername(user.getUsername());
+        // user.setEmail(user.getEmail());
+        return usersRepository.save(user);
+    }
+
+    @Override
     public Optional<Users> getUserByUsername(String username) {
         return usersRepository.findByUsername(username);
     }

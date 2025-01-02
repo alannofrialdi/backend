@@ -26,9 +26,7 @@ public class CategoryMapper {
                                                                 task.getCreatedAt(),
                                                                 task.getUpdatedAt(),
                                                                 task.getCategory().getId(),
-                                                                task.getCategory().getCategory(),
-                                                                task.getUser().getId(),
-                                                                task.getUser().getUsername()))
+                                                                task.getCategory().getCategory()))
                                                 .collect(Collectors.toList()));
         }
 

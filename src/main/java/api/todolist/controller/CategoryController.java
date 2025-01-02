@@ -35,7 +35,7 @@ public class CategoryController {
                 Map<String, Object> response = new HashMap<>();
                 response.put("status", "HttpStatus.CONFLICT");
                 response.put("code", 409);
-                response.put("message", "Category already exists for this user");
+                response.put("message", "Category already exists");
                 return ResponseEntity.status(200)
                         .body(response);
             }

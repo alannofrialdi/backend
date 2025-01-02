@@ -39,7 +39,7 @@ public class Users {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty("categories")
-    @JsonManagedReference
+    @JsonManagedReference("user-category")
     private List<Category> categories = new ArrayList<>();
 
     public Long getId() {

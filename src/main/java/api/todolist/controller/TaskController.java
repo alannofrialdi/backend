@@ -6,7 +6,9 @@ import api.todolist.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -19,9 +21,9 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponseDTO>> getTasksByCategoryAndUser(@RequestParam Long categoryId,
+    public ResponseEntity<List<TaskResponseDTO>> getTasksByCategory(@RequestParam Long categoryId,
             @RequestParam Long userId) {
-        List<TaskResponseDTO> tasks = taskService.getTasksByCategoryAndUser(categoryId, userId);
+        List<TaskResponseDTO> tasks = taskService.getTasksByCategory(categoryId, userId);
         return ResponseEntity.ok(tasks);
     }
 
@@ -38,9 +40,15 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long id, @RequestBody TaskRequestDTO requestDTO) {
-        TaskResponseDTO updatedTask = taskService.updateTask(id, requestDTO);
-        return ResponseEntity.ok(updatedTask);
+    public ResponseEntity<Map<String, Object>> updateTask(@PathVariable Long id,
+            @RequestBody TaskRequestDTO requestDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+        taskService.updateTask(id, requestDTO);
+        response.put("status", "ok");
+        response.put("message", "Updated task succesfully");
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

@@ -16,4 +16,6 @@ public interface UsersService {
     Optional<Users> getUserByUsername(String username); // Digunakan untuk autentikasi jika memakai JWT
 
     Optional<Users> getUserByPassword(String password); // Digunakan untuk autentikasi jika memakai JWT
+
+    Users updateUser(Users user);
 }

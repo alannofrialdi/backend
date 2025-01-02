@@ -13,16 +13,13 @@ public class TaskResponseDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long categoryId;
-    private String categoryName;
-    private Long userId;
-    private String username;
 
     public TaskResponseDTO() {
     };
 
     public TaskResponseDTO(Long id, String title, String description, String priority, String status,
             LocalDateTime deadline, LocalDateTime createdAt, LocalDateTime updatedAt, Long categoryId,
-            String categoryName, Long userId, String username) {
+            String categoryName) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -32,9 +29,6 @@ public class TaskResponseDTO {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.categoryId = categoryId;
-        this.categoryName = categoryName;
-        this.userId = userId;
-        this.username = username;
     }
 
     // Getters and Setters
@@ -110,27 +104,4 @@ public class TaskResponseDTO {
         this.categoryId = categoryId;
     }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }

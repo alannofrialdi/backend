@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import api.todolist.model.Users;
 import api.todolist.service.UsersService;
 import jakarta.validation.Valid;
+// import jakarta.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("/api/users")
@@ -160,6 +161,47 @@ public class UsersController {
         }
 
         return ResponseEntity.status((int) response.get("code")).body(response);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Map<String, Object>> updateUser(@RequestParam String email, @RequestBody Users updatedUser) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // Fetch the existing user by email
+            Optional<Users> existingUserOptional = userService.getUserByEmail(email);
+            if (existingUserOptional.isEmpty()) {
+                response.put("status", "error");
+                response.put("code", 404);
+                response.put("message", "User not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            Users existingUser = existingUserOptional.get();
+
+            // Update fields (only those that are not null in the updatedUser)
+            if (updatedUser.getUsername() != null && !updatedUser.getUsername().isBlank()) {
+                existingUser.setUsername(updatedUser.getUsername());
+            }
+            if (updatedUser.getEmail() != null && !updatedUser.getEmail().isBlank()) {
+                existingUser.setEmail(updatedUser.getEmail());
+            }
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isBlank()) {
+                existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword())); // Hash new password
+            }
+
+            // Save updated user to the database
+            userService.updateUser(existingUser);
+
+            response.put("status", "ok");
+            response.put("code", 200);
+            response.put("message", "User updated successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("code", 500);
+            response.put("message", "An error occurred while updating the user: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
 }

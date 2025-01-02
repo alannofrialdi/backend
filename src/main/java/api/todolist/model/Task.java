@@ -22,12 +22,8 @@ public class Task {
     private Long id;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("category-task")
     private Category category;
-
-    @ManyToOne
-    @JsonBackReference
-    private Users user;
 
     @NotNull
     @Size(max = 255)
@@ -86,14 +82,13 @@ public class Task {
     }
 
     public Task() {
-        // Default constructor
+
     }
 
-    public Task(Category category, Users user, String title, String description, Priority priority,
+    public Task(Category category, String title, String description, Priority priority,
             LocalDateTime deadline,
             Status status) {
         this.category = category;
-        this.user = user;
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -199,11 +194,4 @@ public class Task {
         return Objects.hash(id);
     }
 
-    public Users getUser() {
-        return user;
-    }
-
-    public void setUser(Users user) {
-        this.user = user;
-    }
 }

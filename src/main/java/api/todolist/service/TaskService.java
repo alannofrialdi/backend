@@ -10,10 +10,11 @@ import api.todolist.model.Users;
 import api.todolist.repository.CategoryRepository;
 import api.todolist.repository.TaskRepository;
 import api.todolist.repository.UsersRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class TaskService {
@@ -31,15 +32,12 @@ public class TaskService {
                 this.usersRepository = usersRepository;
         }
 
-        public List<TaskResponseDTO> getTasksByCategoryAndUser(Long categoryId, Long userId) {
+        public List<TaskResponseDTO> getTasksByCategory(Long categoryId, Long userId) {
                 Category category = categoryRepository.findById(categoryId)
                                 .orElseThrow(() -> new IllegalArgumentException(
                                                 "Category with ID " + categoryId + " not found"));
-                Users user = usersRepository.findById(userId)
-                                .orElseThrow(() -> new IllegalArgumentException(
-                                                "User with ID " + userId + " not found"));
 
-                return taskRepository.findByCategoryAndUser(category, user)
+                return taskRepository.findByCategory(category)
                                 .stream()
                                 .map(taskMapper::toDTO)
                                 .collect(Collectors.toList());
@@ -84,15 +82,13 @@ public class TaskService {
                                 .orElseThrow(() -> new IllegalArgumentException(
                                                 "Category with ID " + requestDTO.getCategoryId() + " not found"));
 
-                Users user = usersRepository.findById(requestDTO.getUserId())
-                                .orElseThrow(() -> new IllegalArgumentException(
-                                                "User with ID " + requestDTO.getUserId() + " not found"));
-
                 task.setTitle(requestDTO.getTitle());
                 task.setDescription(requestDTO.getDescription());
                 task.setDeadline(requestDTO.getDeadline());
+                task.setPriority(Task.Priority.fromString(requestDTO.getPriority()));
+                task.setStatus(Task.Status.fromString(requestDTO.getStatus()));
+
                 task.setCategory(category);
-                task.setUser(user);
 
                 Task updatedTask = taskRepository.save(task);
                 return taskMapper.toDTO(updatedTask);

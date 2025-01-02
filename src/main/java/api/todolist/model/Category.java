@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+// import com.fasterxml.jackson.annotation.JsonIgnore;
 // import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -29,11 +29,11 @@ public class Category {
     private LocalDateTime updatedAt;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("user-category")
     private Users user;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("category-task")
     private List<Task> tasks = new ArrayList<>();
 
     public Long getId() {
