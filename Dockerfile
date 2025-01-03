@@ -1,11 +1,14 @@
-# Gunakan base image JDK 17
+# Use a base image with Java 21
 FROM eclipse-temurin:21-jdk
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy file JAR ke container
+# Copy the jar file into the container
 COPY target/*.jar app.jar
 
-# Jalankan aplikasi
-CMD ["java", "-jar", "app.jar"]
+# Expose the port your application runs on
+EXPOSE 8080
+
+# Command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
