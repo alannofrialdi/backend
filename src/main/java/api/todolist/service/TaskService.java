@@ -11,6 +11,7 @@ import api.todolist.repository.CategoryRepository;
 import api.todolist.repository.TaskRepository;
 import api.todolist.repository.UsersRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,11 @@ public class TaskService {
                 this.usersRepository = usersRepository;
         }
 
-        public List<TaskResponseDTO> getTasksByCategory(Long categoryId, Long userId) {
+        public List<Task> filterTasksByUserAndDate(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
+                return taskRepository.findByUserAndCreatedAtBetween(userId, startDate, endDate);
+        }
+
+        public List<TaskResponseDTO> getTasksByCategory(Long categoryId) {
                 Category category = categoryRepository.findById(categoryId)
                                 .orElseThrow(() -> new IllegalArgumentException(
                                                 "Category with ID " + categoryId + " not found"));

@@ -2,10 +2,14 @@ package api.todolist.controller;
 
 import api.todolist.dto.TaskRequestDTO;
 import api.todolist.dto.TaskResponseDTO;
+import api.todolist.model.Task;
 import api.todolist.service.TaskService;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +25,22 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponseDTO>> getTasksByCategory(@RequestParam Long categoryId,
-            @RequestParam Long userId) {
-        List<TaskResponseDTO> tasks = taskService.getTasksByCategory(categoryId, userId);
+    public ResponseEntity<List<TaskResponseDTO>> getTasksByCategory(@RequestParam Long categoryId) {
+        List<TaskResponseDTO> tasks = taskService.getTasksByCategory(categoryId);
+        return ResponseEntity.ok(tasks);
+    }
+
+    @GetMapping("/filterbydate")
+    public ResponseEntity<List<Task>> filterTasksByUserAndDate(
+            @RequestParam Long userId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+        // if (startDate.isAfter(endDate)) {
+        // throw new IllegalArgumentException("Start date must be before end date");
+        // }
+
+        List<Task> tasks = taskService.filterTasksByUserAndDate(userId, startDate, endDate);
         return ResponseEntity.ok(tasks);
     }
 
